@@ -118,6 +118,19 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     # create isaac environment
     env = gym.make(args_cli.task, cfg=env_cfg, render_mode="rgb_array" if args_cli.video else None)
 
+    # ===== DEBUG: print joint names =====
+    unwrapped = env.unwrapped
+    print("1111111111111")
+    # ManagerBasedRLEnv / DirectRLEnv 都有 scene
+    if hasattr(unwrapped, "scene"):
+        for name, asset in unwrapped.scene.articulations.items():
+            print(f"\n[INFO] Articulation: {name}")
+            print("Joint names (in order):")
+            for i, jn in enumerate(asset.joint_names):
+                print(f"  {i}: {jn}")
+
+    print("1111111111112")
+
     # convert to single-agent instance if required by the RL algorithm
     if isinstance(env.unwrapped, DirectMARLEnv):
         env = multi_agent_to_single_agent(env)
